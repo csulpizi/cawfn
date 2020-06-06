@@ -2,7 +2,7 @@
 
 A Clojure library that provides a compile-time aware version of `clojure.core/defn`. 
 
-`sdefn` stands for `smart defn`, but I'm not very happy with the name so I'm open to suggestions.
+`sdefn` stands for 'smart defn', but I'm not very happy with the name so I'm open to suggestions.
 
 ## Rationale 
 
