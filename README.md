@@ -1,6 +1,6 @@
 # sdefn
 
-A Clojure library that provides a compile-time aware version of `core/defn`. 
+A Clojure library that provides a compile-time aware version of `clojure.core/defn`. 
 
 ## Rationale 
 
@@ -22,7 +22,7 @@ Usage is fairly straight forward.
 
 `(sdefn foo [:required [a b c] :optional [d e] :or {d 7}] ... <insert body here>`
 
-The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`, `d`, and `e`. In order to define a call to `foo`, you need to provide it with `a`, `b`, and `c`. If any argument is missing, an exception will be thrown.
+The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`, `d`, and `e`. In order to define a call to `foo`, you need to provide it with `a`, `b`, and `c`. If any argument is missing, an exception will be thrown at compile-time. If provided with an unknown argument, say `f`, an exception will be thrown at compile-time. 
 
 `(foo :a 6 :b 7 :c 4 :d 2)`
 
