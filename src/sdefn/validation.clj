@@ -8,7 +8,7 @@
 
 (defn throw-exception-when-keys-unknown [unknown-params]
   (when (seq unknown-params)
-    (throw (Exception. (str "Unknown keys: " (ks->message unknown-params) ". These parameters are not defined in the called function. Check that this parameter is spelled right, or add the parameter to the called function.")))))
+    (throw (Exception. (str "Unknown keys: " (ks->message unknown-params) ". These parameters are not defined in the called function.")))))
 
 (defn validate-params
   "params        -> map
