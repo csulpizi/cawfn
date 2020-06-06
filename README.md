@@ -8,7 +8,7 @@ Functions with large arities can be hard to work with.
 
 Say you have a fn `(defn foo [a b c d e f g h i j k] ...)`
 
-Calling `foo` is a nightmare. Accidentally mixing up the ordering of the arguments is likely, which you may not catch until something goes wrong. You might not provide the right number of arguments, which (under default circumstances) isn't check until the function is called during run-time.
+Calling `foo` is a nightmare. Accidentally mixing up the ordering of the arguments is likely, which you may not catch until something goes wrong. You might not provide the right number of arguments, which isn't checked until the function is called during run-time or in testing.
 
 Similarly, this way of defining functions is not very future proof. Any changes you make to the definition of the function will affect every call of that function, and it can be fairly easy to lost track of all of the calls you need to adjust and make sure they follow the new definition.
 
