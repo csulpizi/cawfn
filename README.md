@@ -14,7 +14,9 @@ Similarly, this way of defining functions is not very future proof. Any changes 
 
 This is also an issue that is not very easy to test. Unit tests can test the definition of foo itself, but that doesn't guarantee that every call to foo is written appropriately.
 
-sdefn was written to address this problem. sdefn allows you to define a function in a similar manner to defn, but it wraps the function with a validation function that runs at compile time. The validation checks that all required arguments have been provided, and that no extraneous (or mispelled) arguments are provided. 
+Some of these issues are solved by providing an argument map object. But that does not verify that the object you are supplying has the arguments you expect it to have or that the arguments are spelled right, at least not until run-time.
+
+sdefn was written to address this problem. sdefn allows you to define a function in a similar manner to defn, but it wraps the function with a validation function that runs at compile-time. The validation checks that all required arguments have been provided, and that no extraneous (or mispelled) arguments are provided. 
 
 ## Usage
 
