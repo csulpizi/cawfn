@@ -1,118 +1,100 @@
-(ns defn+.core
+(ns csulpizi.smart-defn
+  "Provides an alternative to defn, sdefn, allowing you to specify required
+   arguments, optional arguments, and default arguments. Every call to a
+   function defined by sdefn will be checked for required arguments at
+   compile time."
   (:require [clojure.set :refer [difference]]))
 
-;;Utils
+(def args-sym '_args)
 
-(defn nil-or-pred?
-  [pred x]
-  (or (nil? x)
-      (pred x)))
+(defn- ks->message
+  "[:a :b :c] -> 'a, b, c'"
+  [ks]
+  (->> (map name ks)
+       (clojure.string/join ",")))
 
-(defn update-nth
-  [v n f & args]
-  {:pre [(vector? v)
-         (nat-int? n)
-         (fn? f)]}
-  (conj (when (-> n dec nat-int?) (subvec v 0 (dec n)))
-        (apply f (nth v n) args)
-        (when (< (inc n) (count v))                         ;;FIXME(cs) This is awkward
-          (subvec v (inc n)))))
+(defn throw-missing-params-error [missing-params]
+  (throw (Exception. (str "Missing parameters: " (ks->message missing-params)))))
 
-;;Functions during definitions
-
-(defn symbol->symbol$_ [sym]
-  (-> sym name (str "$_") symbol))
-
-(defn macro-params->fn-params
-  [{:keys [required optional as or]}]
-  {:pre [(nil-or-pred? vector? required)
-         (every? symbol? required)
-         (nil-or-pred? vector? optional)
-         (every? symbol? optional)
-         (nil-or-pred? symbol? as)
-         (nil-or-pred? map? or)]}
-  (-> {:keys (conj required optional)}
-      (assoc :as as :or or)
-      vector))
-
-(defn args->params+new-args [& args]                        ;;FIXME(cs): Make this iterative
-  (println (nth args 0))
-  (cond
-    (vector? (nth args 0)) {:params (nth args 0) :new-args (update-nth (nth args 0) 0 macro-params->fn-params)}
-    (vector? (nth args 1)) {:params (nth args 1) :new-args (update-nth (nth args 1) 1 macro-params->fn-params)}
-    (vector? (nth args 2)) {:params (nth args 2) :new-args (update-nth (nth args 2) 2 macro-params->fn-params)}
-    :else (throw (Exception. "defn++ or whatever did not conform to spec")))) ;;FIXME(cs)
-
-(defn valid-params? [required-keys params]
+(defn valid-params?
+  "params        -> map
+   required-keys -> vector of keywords
+   Check that <params> contains all keys in <required-keys>.
+   If any keys are missing, throw an exception explaining the missing keys."
+  [required-keys params]
   {:pre [(vector? required-keys)
-         (vector? params)
-         (every? keyword? required-keys)
-         (-> params count even?)]}
-  (empty? (difference (set required-keys)
-                      (-> (apply hash-map params)
-                          keys
-                          set))))
+         (map? params)
+         (every? keyword? required-keys)]}
+  (let [missing-params (difference (set required-keys) (-> params keys set))]
+    (if (seq missing-params)
+      (throw-missing-params-error missing-params)
+      true)))
 
-(defmacro defn+ [name# & args#]
-  (let [name*# (symbol->symbol$_ name#)
-        {:keys [params# args*#]} (apply args->params+new-args args#)]
-    (list 'defn name*# args*#)
-    (println "COOLIO")
-    (list 'defmacro name# '[args]
-          (list 'when
-                (list 'valid-params? (:required params#) 'args)
-                (list name*# 'args)))))
+(defn sdefn-params->defn-params
+  "Create a "
+  [required optional or]
+  (cond
+    (and (empty? required) (empty? optional))
+    []
+    (empty? or)
+    ['& {:keys (vec (concat required optional)) :as args-sym}]
+    :else
+    ['& {:keys (vec (concat required optional)) :or or :as args-sym}]))
 
-;;Functions during calls
+(defn parse-params [& {:keys [required optional or]}]
+  {:converted-params# (sdefn-params->defn-params required optional or)
+   :required-keys# (vec (map keyword required))})
 
+(defn defn-args->map* [a0 & args]
+  (loop [result {:name# a0}
+         args* args]
+    (cond
+      (-> args* first vector?)
+       (assoc result :params# (first args*) :body# (rest args*))
+      (-> args* first string?)
+       (recur (assoc result :doc-string# (first args*)) (rest args*))
+      (-> args* first map?)
+       (recur (assoc result :attribute-map# (first args*)) (rest args*)))))
 
-
-
-
-
-
-
-
-#_(defn macroize-name [&symbol]
-  (-> &symbol symbol name (str "#") symbol))
-
-#_(defmacro run-dis-fn
-  [&name &name# &arg-map &required-symbols]
-  (println "baaaa" &name)
-  (println &arg-map)
-  (println (keys &arg-map))
-  (println &required-symbols)
-  (let [missing-args (difference (-> &arg-map keys set)
-                                 (set (map keyword &required-symbols)))]
-    (when (seq missing-args)
-      (throw (Exception. (str "Arity exception: " &name " is missing arguments " missing-args))))
-    (list* &name#
-           (for [&arg &required-symbols]
-             (get &arg-map (keyword &arg))))))
-
-#_(defmacro create-dis-fn
-  [&name &name* &required-args]
-  (list 'defmacro &name '[arg-map]
+(defn defn-args->map
+  "Given a set of args provided to sdefn, return a map with keys
+  :name# :doc-string# :attribute-map# :params# :body# :callable-params#
+  required-keys#, where callable-params refe"
+  [& args]
+  (let [{:keys [params#] :as args*} (apply defn-args->map* args)]
+    (merge (apply parse-params params#)
+           args*)))
 
 
-        )
-  )
+(defmacro defmacro*
+  "A wrapper for defmacro that expects a doc-string and an attribute-map to be
+   provided, but will ignore them if their value is nil."
+  [name# doc-string# attribute-map# params# & body#]
+  (list* 'defmacro
+         (concat [name#] (filter some? [doc-string# attribute-map#]) [params#] body#)))
 
-#_(defmacro defn+
-  [&name &args & &body]
-  (let [&name* (macroize-name &name)
-        &required-args (get &args :required)]
-    (list* `defn &name* &required-args &body)
-    (println "Wallyyyyy" &name)
-    (println `(list* run-dis-fn ~&name ~&name* &arg-map ~&required-args))
-    (println '[&arg-map])
-    (list `defmacro &name '[&arg-map]
-          `(list 'run-dis-fn &name &name* &arg-map &required-args))
-           #_('list* 'run-dis-fn &name &name* 'arg-map &required-args)
-    ))
+(defmacro sdefn*
+  "Creates a macro that checks whether or not  expand to (apply f args) if the requi"
+  [f# {:keys [name# doc-string# attribute-map# callable-params# required-keys#]}]
+  (list 'defmacro* name# doc-string# attribute-map# callable-params#
+        (list 'when (list `valid-params? required-keys# args-sym)
+              (list 'list* f# (list 'apply 'concat args-sym)))))
 
-#_(defn+ example {:required [a b c]
-                :optional [d]
-                :as args}
-       (println "a" a "b" b "bananas")
-       (+ a b c))
+(defmacro sdefn
+  "Alternative to defn.
+   Any time a function defined by sdefn is called in the code base, the provided
+   arguments will be checked to make sure the required-keys have been provided.
+   This check is performed at compile time, and if the inputs do not match the
+   required inputs an exception will be thrown.
+
+   Arguments should be provided as follows:
+   name, doc-string?, attribute-map?, params, & body
+
+   An example of a valid params format is as follows:
+      [:required [a b c] :optional [d] :or {d 4}]
+
+   The above example specifies that keys :a, :b, and :c are required for the function
+   being defined, and :d is an optional key with default value 4"
+  [& args#]
+  (let [{:keys [converted-params# body#] :as argmap#} (apply defn-args->map args#)]
+    (list 'sdefn* (list* 'fn converted-params# body#) argmap#)))
