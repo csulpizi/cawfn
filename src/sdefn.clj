@@ -3,16 +3,20 @@
    Any time a function defined by sdefn is called in a code base, the provided
    arguments will be checked to make sure the required-keys have been provided.
    This check is performed at compile time, and if the inputs do not match the
-   required inputs an exception will be thrown.
+   required inputs an exception will be thrown. Similarly, if an argument is
+   provided that is unrecognized by the function, an exception will be thrown
+   at compile-time.
 
    example:
    -----------
    (sdefn foo [:required [a b] :optional [c]] ... )
 
-   (foo :a 5 :b 3) -> this line will compile properly
-                           because it has all the required arguments
-   (foo :a 5 :c 3) -> this line will throw an exception at compile
-                           time because it is missing argument b
+   (foo :a 5 :b 3)      -> this line will compile properly
+                            since it has all the required arguments.
+   (foo :a 5 :c 3)      -> this line will throw an exception at compile-time
+                            since it is missing argument b.
+   (foo :a 5 :b 3 :d 7) -> this line will throw an exception at compile-time
+                            since it has an unrecognized argument d.
    -----------"
   {:author "github.com/csulpizi" :date "2020/06/06" :version "1.0"}
 
