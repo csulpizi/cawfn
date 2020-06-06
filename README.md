@@ -31,3 +31,7 @@ The above snippet would successfully compile and perform the given body with the
 `(foo :a 2 :b 3)`
 
 The above snippet would throw an exception during compile-time since it does not specify argument `c`.
+
+`(foo :a 6 :b 7 :c 4 :f 2)`
+
+The above snippet would throw an exception during compile-time since it does not recognize argument `f`. (This is a feature to prevent accidentally spelling an argument incorrectly).
