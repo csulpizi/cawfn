@@ -18,7 +18,7 @@ This is also an issue that is not very easy to test. Unit tests can test the def
 
 Some of these issues can be solved by providing an argument map object. But that does not verify that the object you are supplying contains the arguments you expect it to have or that the arguments are spelled right.
 
-`sdefn` was written to address this problem. `sdefn` allows you to define a function in a similar manner to `defn`, but it wraps the function with a validation function that runs at compile-time. The validation checks that all required arguments have been provided, and that no extraneous (or mispelled) arguments are provided. 
+`sdefn` was written to address this problem. `sdefn` allows you to define a function in a similar manner to `defn`, but it wraps the function with a validation that runs at compile-time. The validation checks that every call to the function provides required arguments, and that no extraneous (or mispelled) arguments are provided. 
 
 ## Usage
 
