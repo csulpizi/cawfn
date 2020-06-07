@@ -2,7 +2,7 @@
 
 A Clojure library that provides a compile-time aware version of `clojure.core/defn`. 
 
-`cawfn` stands for 'compile-time aware defn'
+`cawfn` is an abbreviation of '*c*ompile-time *aw*are *f*unctio*n*'
 
 ## Rationale 
 
