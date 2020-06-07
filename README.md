@@ -14,7 +14,7 @@ Calling `foo` is a nightmare. Accidentally mixing up the ordering of the argumen
 
 Similarly, this way of defining functions is not very future proof. Any changes you make to the definition of the function will affect every call of that function, and it can be fairly easy to lose track of all of the calls you need to adjust to make sure they follow the new definition.
 
-This is also an issue that is not very easy to test. Unit tests can test the definition of foo itself, but that doesn't guarantee that every call to foo is written appropriately.
+This is also an issue that is not very easy to test. Unit tests can test the definition of `foo` itself, but that doesn't guarantee that every call to `foo` is written appropriately.
 
 Some of these issues can be solved by providing an argument map object. But that does not verify that the object you are supplying contains the arguments you expect it to have or that the arguments are spelled right.
 
