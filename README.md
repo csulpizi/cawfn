@@ -1,4 +1,4 @@
-# cawfn
+# cawfn <img src="icon.png" alt="drawing" width="50" align="right"/>
 
 A Clojure library that provides a compile-time aware version of `clojure.core/defn`. 
 
