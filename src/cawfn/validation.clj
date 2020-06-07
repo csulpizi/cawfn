@@ -1,6 +1,6 @@
-(ns sdefn.validation
-  "Validation checks for calls to functions defined by sdefn."
-  (:require [sdefn.utils :refer [ks->message missing-keys unknown-keys]]))
+(ns cawfn.validation
+  "Validation checks for calls to functions defined by cawfn."
+  (:require [cawfn.utils :refer [ks->message missing-keys unknown-keys]]))
 
 (defn throw-exception-when-keys-missing [missing-params]
   (when (seq missing-params)

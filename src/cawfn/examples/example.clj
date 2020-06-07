@@ -1,11 +1,11 @@
-(ns sdefn.examples.example
+(ns cawfn.examples.example
   (:require [clojure.string :refer [split]]
-            [sdefn.core :refer [sdefn]])
+            [cawfn.core :refer [cawfn]])
   (:import java.util.Date))
 
 (def order-count (atom 0))
 
-(sdefn order-record
+(cawfn order-record
        "Print order details and return an order record object"
        [:required [customer item] :optional [comments qty] :or {qty 1}]
        (let [date (str (Date.))]

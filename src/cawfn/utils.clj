@@ -1,4 +1,4 @@
-(ns sdefn.utils
+(ns cawfn.utils
   "Some basic utility functions."
   (:require [clojure.set :refer [difference]]))
 

@@ -1,8 +1,8 @@
-# sdefn
+# cawfn
 
 A Clojure library that provides a compile-time aware version of `clojure.core/defn`. 
 
-`sdefn` stands for 'smart defn', but I'm not very happy with the name so I'm open to suggestions.
+`cawfn` stands for 'smart defn', but I'm not very happy with the name so I'm open to suggestions.
 
 ## Rationale 
 
@@ -18,13 +18,13 @@ This is also an issue that is not very easy to test. Unit tests can test the def
 
 Some of these issues can be solved by providing an argument map object. But that does not verify that the object you are supplying contains the arguments you expect it to have or that the arguments are spelled right.
 
-`sdefn` was written to address this problem. `sdefn` allows you to define a function in a similar manner to `defn`, but it wraps the function with a validation that runs at compile-time. The validation checks that every call to the function provides required arguments, and that no extraneous (or mispelled) arguments are provided. 
+`cawfn` was written to address this problem. `cawfn` allows you to define a function in a similar manner to `defn`, but it wraps the function with a validation that runs at compile-time. The validation checks that every call to the function provides required arguments, and that no extraneous (or mispelled) arguments are provided. 
 
 ## Usage
 
 Usage is fairly straight forward.
 
-`(sdefn foo [:required [a b c] :optional [d e] :or {d 7}] ... <insert body here>`
+`(cawfn foo [:required [a b c] :optional [d e] :or {d 7}] ... <insert body here>`
 
 The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`, `d`, and `e`. In order to define a call to `foo`, you need to provide it with `a`, `b`, and `c`. If any argument is missing, an exception will be thrown at compile-time. If provided with an unknown argument, say `f`, an exception will be thrown at compile-time. 
 
