@@ -32,6 +32,10 @@ The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`
 
 The above snippet would successfully compile and perform the given body with the provided values.
 
+`(foo :c 4 :a 6 :d 2 :b 7)`
+
+The above snippet would successfully compile and perform the given body with the provided values (note the ordering is different than the previous snippet, but that's fine ordering does not matter).
+
 `(foo :a 2 :b 3)`
 
 The above snippet would throw an exception during compile-time since it does not specify argument `c`.
