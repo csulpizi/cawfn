@@ -4,6 +4,11 @@ A Clojure library that provides a compile-time aware version of `clojure.core/de
 
 `cawfn` is an abbreviation of '**c**ompile-time **aw**are **f**unctio**n**'
 
+To import use:
+`[cawfn "1.0-SNAPSHOT"]`
+Or see further details at
+https://clojars.org/cawfn
+
 ## Rationale 
 
 Functions with large arities can be hard to work with. 
