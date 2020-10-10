@@ -25,8 +25,9 @@
             [cawfn.validation :refer [validate-params]]))
 
 (defmacro cawfn*
-  "Creates a macro that checks whether or not the right arguments have been provided.
-   If so, it expands into a call to f with the given arguments."
+  "Creates a macro that defines a new macro with the desired name, meta-data and parameters.
+  The new macro wraps a validation call (called during compile-time) and applies the
+  specified function to any arguments provided (called during run-time)."
   [f# {:keys [name# doc-string# attribute-map# defn-params# required-keys# known-keys#]}]
   (list `defmacro* name# doc-string# attribute-map# defn-params#
         (list `validate-params required-keys# known-keys# args-sym)

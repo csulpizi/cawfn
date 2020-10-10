@@ -4,6 +4,10 @@ A Clojure library that provides a compile-time aware version of `clojure.core/de
 
 `cawfn` is an abbreviation of '**c**ompile-time **aw**are **f**unctio**n**'
 
+## Clojars Info
+`[cawfn "1.0-SNAPSHOT"]`
+https://clojars.org/cawfn
+
 ## Rationale 
 
 Functions with large arities can be hard to work with. 
@@ -31,6 +35,10 @@ The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`
 `(foo :a 6 :b 7 :c 4 :d 2)`
 
 The above snippet would successfully compile and perform the given body with the provided values.
+
+`(foo :c 4 :a 6 :d 2 :b 7)`
+
+The above snippet would successfully compile and perform the given body with the provided values (note the ordering is different than the previous snippet, but that's fine ordering does not matter).
 
 `(foo :a 2 :b 3)`
 
