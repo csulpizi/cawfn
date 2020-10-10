@@ -18,7 +18,7 @@
   [required-keys known-keys params]
   {:pre [(vector? required-keys)
          (vector? known-keys)
-         (map? params)
+         (or (map? params) (empty? params))
          (every? keyword? required-keys)
          (every? keyword? known-keys)]}
   (-> (missing-keys required-keys params)

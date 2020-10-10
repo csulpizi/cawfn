@@ -1,16 +1,16 @@
 (ns cawfn.arguments
-  "Handlers for cawfn arguments and paramters.")
+  "Handlers for cawfn arguments and paramters."
+  (:require [cawfn.utils :as u]))
 
-(def args-sym '_args)
+(def args-sym (gensym))
 
 (defn cawfn-params->defn-params
   "Take the deconstructed values provided in the param vector in cawfn
    and create a param vector that can be passed into defn."
   [required optional or]
-  (cond
-    (and (empty? required) (empty? optional)) []
-    (empty? or) ['& {:keys (vec (concat required optional)) :as args-sym}]
-    :else ['& {:keys (vec (concat required optional)) :or or :as args-sym}]))
+  (let [m (merge {:keys (u/vcat required optional) :as args-sym}
+                 (when (seq or) {:or or}))]
+    (u/vcat ['& m])))
 
 (defn parse-cawfn-params
   "Given a vector of params passed into cawfn, return a map with keys
@@ -26,8 +26,7 @@
    :known-keys# (vec (map keyword (concat required optional)))})
 
 (defn parse-cawfn-args
-  "Given a list of arguments passed into cawfn, return a map with keys
-   :doc-string# :attribute-map# :cawfn-params# and :body#"
+  "Given a list of arguments passed into cawfn, return a map with keys :doc-string# :attribute-map# :cawfn-params# and :body#"
   [result a0 & args]
   (cond
     (vector? a0)

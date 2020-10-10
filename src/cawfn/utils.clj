@@ -21,3 +21,5 @@
   [name# doc-string# attribute-map# params# & body#]
   (list* 'defmacro
          (concat [name#] (filter some? [doc-string# attribute-map#]) [params#] body#)))
+
+(def vcat (comp vec concat))
