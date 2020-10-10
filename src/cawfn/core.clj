@@ -7,41 +7,45 @@
    provided that is unrecognized by the function, an exception will be thrown
    at compile-time.
 
+   cawfn supports doc-strings and attribute maps, however it does not support
+   pre/post maps.
+
    example:
    -----------
-   (cawfn foo [:required [a b] :optional [c]] ... )
+   (cawfn foo [a & {:required-keys [b] :optional-keys [c] :or {c 2}}] ... )
 
-   (foo :a 5 :b 3)      -> this line will compile properly
+   (foo 5 :b 3)      -> this line will compile properly
                             since it has all the required arguments.
-   (foo :a 5 :c 3)      -> this line will throw an exception at compile-time
+   (foo 5 :c 3)      -> this line will throw an exception at compile-time
                             since it is missing argument b.
-   (foo :a 5 :b 3 :d 7) -> this line will throw an exception at compile-time
+   (foo 5 :b 3 :d 7) -> this line will throw an exception at compile-time
                             since it has an unrecognized argument d.
    -----------"
-  {:author "github.com/csulpizi" :date "2020/06/06" :version "1.0"}
-
-  (:require [cawfn.arguments :refer [args-sym cawfn-args->arg-map]]
-            [cawfn.utils :refer [defmacro*]]
-            [cawfn.validation :refer [validate-params]]))
-
-(defmacro cawfn*
-  "Creates a macro that defines a new macro with the desired name, meta-data and parameters.
-  The new macro wraps a validation call (called during compile-time) and applies the
-  specified function to any arguments provided (called during run-time)."
-  [f# {:keys [name# doc-string# attribute-map# defn-params# required-keys# known-keys#]}]
-  (list `defmacro* name# doc-string# attribute-map# defn-params#
-        (list `validate-params required-keys# known-keys# args-sym)
-        (list 'list* f# (list 'apply 'concat args-sym))))
+  {:author "github.com/csulpizi" :current-version "2.0"
+   :version-history
+   {"1.0" {:date "2020/06/06"
+           :changes "Initial project."}
+    "2.0" {:data "2020/10/10"
+           :changes "Complete overhaul to improve syntax, add features, and simplify."}}}
+  (:require [cawfn.arguments :refer [cawfn-args]]
+            [cawfn.util :refer [defmacro*]]
+            [cawfn.validation :refer [validate-args]]))
 
 (defmacro cawfn
-  "Create a function that verifies that the correct arguments have been passed in
+  "Define a function that verifies that the correct arguments have been passed in
    at compile time.
-
-   Arguments should be provided as follows:
-     name, doc-string?, attribute-map?, params, & body
-   
    An example of a valid params format is as follows:
-     [:required [a b c] :optional [d] :or {d 4}]"
-  [& args#]
-  (let [{:keys [defn-params# body#] :as argmap#} (apply cawfn-args->arg-map args#)]
-    (list `cawfn* (list* 'fn defn-params# body#) argmap#)))
+     [a b {:required-keys [a b c] :optional-keys [d] :or {d 4}]"
+  {:added "1.0"
+   :arglists '([name doc-string? attr-map? [params*] body])}
+  [& _args]
+  (let [{:keys [fn-name fn-name-str
+                doc-string? attr-map?
+                args body required-keys
+                all-keys arg-sym] :as whatever}
+        (cawfn-args _args)]
+    (defmacro* fn-name doc-string? attr-map? args
+                (if (seq all-keys)
+                  `(do (validate-args ~fn-name-str ~all-keys ~required-keys ~arg-sym)
+                       ~@body)
+                  `(do ~@body)))))
