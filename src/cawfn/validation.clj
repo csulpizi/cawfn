@@ -1,22 +1,21 @@
 (ns cawfn.validation
-  (:require [clojure.set :refer [difference]]))
+  "Defines tests that verify calls to functions defined by cawfn
+   have the required arguments."
+  (:require [cawfn.errors :as e]
+            [clojure.set :refer [difference]]))
 
-(defn missing-keys [required-keys given-keys]
-  (difference (set required-keys)
-              (set given-keys)))
+(defn verify-no-missing-keys [fn-name required-keys provided-keys]
+  (when-let [missing-keys (not-empty (difference (set required-keys)
+                                                 (set provided-keys)))]
+    (e/throw!-missing-keys-error fn-name missing-keys)))
 
-(defn unknown-keys [defined-keys given-keys]
-  (difference (set given-keys)
-              (set defined-keys)))
+(defn verify-no-unknown-keys [fn-name all-keys provided-keys]
+  (when-let [unknown-keys (not-empty (difference (set provided-keys)
+                                                 (set all-keys)))]
+    (e/throw!-unknown-keys-error fn-name unknown-keys)))
 
-(defn throw-missing-keys-error [name-str missing]
-  (throw (Exception. (str "Function call to " name-str " is missing the following required arguments: " missing))))
-
-(defn throw-unknown-keys-error [name-str unknown]
-  (throw (Exception. (str "Function call to " name-str " has unknown arguments: " unknown))))
-
-(defn validate-args [name-str all-keys required-keys args]
-  (let [missing (missing-keys required-keys (keys args))
-        unknown (unknown-keys all-keys (keys args))]
-    (cond (seq missing) (throw-missing-keys-error name-str missing)
-          (seq unknown) (throw-unknown-keys-error name-str unknown))))
+(defn validate [{:keys [fn-name all-keys required-keys arity]} provided-args]
+  (println fn-name all-keys required-keys arity provided-args)
+  (let [provided-keys (->> provided-args (drop arity) (apply hash-map) keys)]
+    (verify-no-missing-keys fn-name required-keys provided-keys)
+    (verify-no-unknown-keys fn-name all-keys provided-keys)))
