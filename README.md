@@ -49,3 +49,8 @@ The above snippet would throw an exception during compile-time since it does not
 `(foo 6 :b 7 :c 4 :f 2)`
 
 The above snippet would throw an exception during compile-time since it does not recognize argument `f`. (This is a feature to prevent accidentally spelling an argument incorrectly).
+
+## Additional Functionality
+
+* Supports doc-strings and attribute maps
+* Will automatically populate the `:arglists` attribute with the given list of parameters, unless overwritten by a given attribute map
