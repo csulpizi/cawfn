@@ -6,7 +6,7 @@ A Clojure library that provides a compile-time aware version of `clojure.core/de
 
 ## Clojars Info
 `[cawfn "2.0-SNAPSHOT"]`
-https://clojars.org/cawfn
+[![Clojars Project](https://img.shields.io/clojars/v/cawfn.svg)](https://clojars.org/cawfn)
 
 ## Rationale 
 
