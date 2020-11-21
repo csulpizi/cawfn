@@ -5,7 +5,7 @@ A Clojure library that provides a compile-time aware version of `clojure.core/de
 `cawfn` is an abbreviation of '**c**ompile-time **aw**are **f**unctio**n**'
 
 ## Clojars Info
-`[cawfn "1.0-SNAPSHOT"]`
+`[cawfn "2.0-SNAPSHOT"]`
 https://clojars.org/cawfn
 
 ## Rationale 
@@ -28,7 +28,7 @@ Some of these issues can be solved by providing an argument map object. But that
 
 Usage is fairly straight forward.
 
-`(cawfn foo [a & {:required-keys [b c] :optional-keys [d e] :or {d 7}}] ... <insert body here>`
+`(cawfn foo [a & {:required [b c] :optional [d e] :or {d 7}}] ... <insert body here>`
 
 The above snippet defines a function `foo`. `foo` has 5 arguments: `a`, `b`, `c`, `d`, and `e`. In order to define a call to `foo`, you need to provide it with `a`, `b`, and `c`. If any argument is missing, an exception will be thrown at compile-time. If provided with an unknown argument, say `f`, an exception will be thrown at compile-time. 
 
