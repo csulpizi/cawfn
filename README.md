@@ -5,8 +5,10 @@ A Clojure library that provides a compile-time aware version of `clojure.core/de
 `cawfn` is an abbreviation of '**c**ompile-time **aw**are **f**unctio**n**'
 
 ## Clojars Info
-`[cawfn "2.0-SNAPSHOT"]`
+
 [![Clojars Project](https://img.shields.io/clojars/v/cawfn.svg)](https://clojars.org/cawfn)
+
+`[cawfn "2.0-SNAPSHOT"]`
 
 ## Rationale 
 
