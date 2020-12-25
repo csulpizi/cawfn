@@ -15,7 +15,6 @@
     (e/throw!-unknown-keys-error fn-name unknown-keys)))
 
 (defn validate [{:keys [fn-name all-keys required-keys arity]} provided-args]
-  (println fn-name all-keys required-keys arity provided-args)
   (let [provided-keys (->> provided-args (drop arity) (apply hash-map) keys)]
     (verify-no-missing-keys fn-name required-keys provided-keys)
     (verify-no-unknown-keys fn-name all-keys provided-keys)))
