@@ -1,4 +1,4 @@
-(defproject cawfn "2.1-SNAPSHOT"
+(defproject cawfn "2.2-SNAPSHOT"
   :description "cawfn: a compile-time aware alternative to defn"
   :url "https://github.com/csulpizi/cawfn"
   :dependencies [[org.clojure/clojure "1.10.0"]]
