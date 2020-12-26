@@ -7,11 +7,16 @@
   [fn-param-vec body]
   (list* `fn fn-param-vec body))
 
+(defn resolve* [coll]
+  (postwalk #(if (symbol? %)
+                (-> % resolve var-get)
+                %) coll))
+
 (defn expand-fn-call
   "Returns a list of the form (apply `f` `param-sym`),
    where `f` is a fn defined by `expand-fn`."
   [{:keys [fn-param-vec body param-sym]}]
-  [(list `apply (expand-fn fn-param-vec body) param-sym)])
+  [(list `apply (expand-fn fn-param-vec body) `(resolve* ~param-sym))])
 
 (defn default-arg-list
   ;;NOTE(cs): This is quite possibly the grossest function I've ever written...
